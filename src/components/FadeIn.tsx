@@ -1,5 +1,6 @@
+import { ReactNode } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { useRef, ReactNode } from 'react';
+import { useRef } from 'react';
 
 interface FadeInProps {
   children: ReactNode;
@@ -9,34 +10,28 @@ interface FadeInProps {
   direction?: 'up' | 'left' | 'right' | 'none';
 }
 
+/**
+ * FadeIn — render children always visible,
+ * but animate a subtle Y-translate on scroll-into-view.
+ * No opacity: 0 start — content is ALWAYS readable.
+ */
 export function FadeIn({ children, delay = 0, className, style, direction = 'up' }: FadeInProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const isInView = useInView(ref, { once: true, amount: 0 });
 
-  const getInitial = () => {
-    switch (direction) {
-      case 'up': return { opacity: 0, y: 24 };
-      case 'left': return { opacity: 0, x: -24 };
-      case 'right': return { opacity: 0, x: 24 };
-      case 'none': return { opacity: 0 };
-    }
-  };
-
-  const getAnimate = () => {
-    switch (direction) {
-      case 'up': return isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 };
-      case 'left': return isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -24 };
-      case 'right': return isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 24 };
-      case 'none': return isInView ? { opacity: 1 } : { opacity: 0 };
-    }
-  };
+  const yFrom = direction === 'up' ? 16 : 0;
+  const xFrom = direction === 'left' ? -16 : direction === 'right' ? 16 : 0;
 
   return (
     <motion.div
       ref={ref}
-      initial={getInitial()}
-      animate={getAnimate()}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay }}
+      // Always start visible — just shift position slightly
+      initial={{ y: yFrom, x: xFrom }}
+      animate={{
+        y: isInView ? 0 : yFrom,
+        x: isInView ? 0 : xFrom,
+      }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay }}
       className={className}
       style={style}
     >
