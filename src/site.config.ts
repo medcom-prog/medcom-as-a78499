@@ -1,19 +1,18 @@
 /**
- * site.config.ts — typed schema for customer-specific content.
- * The agent-runner writes this file during Phase 3 build.
- * Every section reads from `site` below.
+ * site.config.ts — Medcom AS
+ * Webbyrå fokusert på nettsider og AIO (AI-optimalisert SEO) for bedrifter.
  */
 
 export interface SiteConfig {
   company: {
-    name: string;           // "Eclean"
-    wordmark_style: string; // see agent-runner/scripts/tools/wordmark.mjs STYLES
-    tag?: string;           // "Oslo · est. 2021"
-    phone: string;          // "+47 12 34 56 78"
-    email: string;          // "hei@eclean.no"
+    name: string;
+    wordmark_style: string;
+    tag?: string;
+    phone: string;
+    email: string;
     address?: string;
     org_no?: string;
-    industry: string;       // key into references/<industry>.json
+    industry: string;
   };
   meta: {
     title: string;
@@ -21,16 +20,16 @@ export interface SiteConfig {
     og_image?: string;
   };
   hero: {
-    eyebrow?: string;       // "Ledige tider denne uken"
-    headline: string;       // "Renhold gjort riktig."
+    eyebrow?: string;
+    headline: string;
     subhead: string;
     primary_cta: { label: string; href: string };
     secondary_cta?: { label: string; href: string };
-    weird_thing_id: string; // e.g. "before-after-slider"
-    weird_thing_props?: Record<string, any>;
+    weird_thing_id: string;
+    weird_thing_props?: Record<string, unknown>;
   };
   services: Array<{
-    n: string;              // "01"
+    n: string;
     title: string;
     lead: string;
     included: string[];
@@ -38,8 +37,8 @@ export interface SiteConfig {
     image?: string;
   }>;
   pricing?: {
-    kind: "calculator" | "quote-cta" | "tiers" | "none";
-    config?: Record<string, any>;
+    kind: 'calculator' | 'quote-cta' | 'tiers' | 'none';
+    config?: Record<string, unknown>;
   };
   team?: Array<{
     name: string;
@@ -49,7 +48,7 @@ export interface SiteConfig {
     image: string;
   }>;
   reviews?: {
-    source: "google" | "trustpilot" | "customer-supplied" | "omit";
+    source: 'google' | 'trustpilot' | 'customer-supplied' | 'omit';
     aggregate?: { rating: number; count: number };
     items: Array<{
       name: string;
@@ -61,7 +60,7 @@ export interface SiteConfig {
   };
   clients?: Array<{
     name: string;
-    style?: string;         // Tailwind classes for the typographic treatment
+    style?: string;
   }>;
   contact: {
     heading: string;
@@ -76,33 +75,116 @@ export interface SiteConfig {
   };
 }
 
-// Default config — the agent OVERWRITES this in Phase 3.
 export const site: SiteConfig = {
   company: {
-    name: "Example AS",
-    wordmark_style: "lowercase-italic-serif-with-dot",
-    tag: "Oslo",
-    phone: "+47 00 00 00 00",
-    email: "hei@example.no",
-    industry: "default",
+    name: 'Medcom AS',
+    wordmark_style: 'uppercase-tight-sans',
+    tag: 'Nettsider & AIO',
+    phone: '+47 978 17 654',
+    email: 'post@medcom.no',
+    industry: 'webbyrå',
   },
   meta: {
-    title: "Example AS",
-    description: "Placeholder — the agent-runner will overwrite this in Phase 3",
+    title: 'Medcom AS — Nettsider og AIO for bedrifter',
+    description:
+      'Medcom bygger nettsider som rangerer og konverterer. Vi tilbyr nettsideutvikling, AIO (AI-optimalisert SEO), og digital markedsføring for norske bedrifter.',
   },
   hero: {
-    headline: "[Placeholder — agent writes this]",
-    subhead: "",
-    primary_cta: { label: "Kom i kontakt", href: "#kontakt" },
-    weird_thing_id: "typography-reveal",
+    eyebrow: 'Nettsider · AIO · Markedsføring',
+    headline: 'Nettsider som jobber\nnår du ikke gjør det.',
+    subhead:
+      'Vi bygger nettsider for norske bedrifter — og nå tilbyr vi AIO: AI-optimalisert SEO som gir deg synlighet i Google, automatisk.',
+    primary_cta: { label: 'Få et tilbud', href: '#kontakt' },
+    secondary_cta: { label: 'Se tjenestene', href: '#tjenester' },
+    weird_thing_id: 'aio-reveal',
   },
-  services: [],
+  services: [
+    {
+      n: '01',
+      title: 'Nettsider',
+      lead: 'Vi bygger nettsider som ser bra ut og fungerer enda bedre. Fra enkel presentasjonsside til avanserte webløsninger.',
+      included: [
+        'Responsivt design',
+        'Rask lastetid',
+        'Optimalisert for konvertering',
+        'CMS for enkel redigering',
+      ],
+    },
+    {
+      n: '02',
+      title: 'AIO — AI-optimalisert SEO',
+      lead: 'Vår nye tjeneste. Vi bruker AI til å optimalisere innholdet ditt kontinuerlig, slik at Google alltid finner deg.',
+      included: [
+        'AI-drevet innholdsoptimalisering',
+        'Teknisk SEO-analyse',
+        'Månedlige rangeringsrapporter',
+        'Automatiske forbedringer',
+      ],
+    },
+    {
+      n: '03',
+      title: 'Meta Ads & Annonsering',
+      lead: 'Målrettet annonsering på Facebook og Instagram. Vi setter opp, optimaliserer og rapporterer.',
+      included: [
+        'Kampanjeoppsett',
+        'Målgruppeanalyse',
+        'A/B-testing av annonser',
+        'Ukentlig rapportering',
+      ],
+    },
+    {
+      n: '04',
+      title: 'Avanserte webløsninger',
+      lead: 'Integrasjoner, bookingsystemer, e-handel og skreddersydde digitale løsninger for krevende bedrifter.',
+      included: [
+        'API-integrasjoner',
+        'E-handelssystemer',
+        'Bookingløsninger',
+        'Tilpassede løsninger',
+      ],
+    },
+  ],
+  pricing: {
+    kind: 'quote-cta',
+  },
+  reviews: {
+    source: 'omit',
+    items: [],
+  },
   contact: {
-    heading: "Ta kontakt",
-    subhead: "",
+    heading: 'Book en gratis gjennomgang.',
+    subhead:
+      'Vi går gjennom nettsiden din, SEO-statusen og hva AIO kan gjøre for deg. Uforpliktende.',
+    opening_hours: 'Man–fre: 08–17',
+    service_area: 'Hele Norge',
   },
   footer: {
-    tagline: "",
-    columns: [],
+    tagline: 'Nettsider og AIO for ambisiøse bedrifter.',
+    columns: [
+      {
+        title: 'Tjenester',
+        links: [
+          ['Nettsider', '#tjenester'],
+          ['AIO — AI-optimalisert SEO', '#tjenester'],
+          ['Meta Ads & Annonsering', '#tjenester'],
+          ['Avanserte webløsninger', '#tjenester'],
+        ],
+      },
+      {
+        title: 'Selskapet',
+        links: [
+          ['Om oss', '#om'],
+          ['Kontakt', '#kontakt'],
+        ],
+      },
+      {
+        title: 'Kontakt',
+        links: [
+          ['+47 978 17 654', 'tel:+4797817654'],
+          ['post@medcom.no', 'mailto:post@medcom.no'],
+        ],
+      },
+    ],
+    status_line: '© 2025 Medcom AS',
   },
 };
