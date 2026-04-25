@@ -2,6 +2,8 @@ import { FadeIn } from './FadeIn';
 import { site } from '../site.config';
 import { motion } from 'framer-motion';
 
+const accentColors = ['#E8FF47', '#A78BFA', '#38BDF8', '#34D399'];
+
 export function ServicesGrid() {
   return (
     <section id="tjenester" style={{ background: '#0D0F1A', padding: '6rem 0' }}>
@@ -36,63 +38,80 @@ export function ServicesGrid() {
           {site.services.map((service, i) => (
             <FadeIn key={service.n} delay={i * 0.08}>
               <motion.div
-                whileHover={{ backgroundColor: 'rgba(24,27,46,1)' }}
+                whileHover={{
+                  backgroundColor: 'rgba(24,27,46,0.9)',
+                  boxShadow: `inset 0 0 0 1px ${accentColors[i]}22`,
+                }}
                 className="group cursor-default h-full"
-                style={{ background: '#0D0F1A', padding: '2.5rem', minHeight: '280px' }}
+                style={{
+                  background: '#0D0F1A',
+                  padding: '2.5rem',
+                  minHeight: '300px',
+                  transition: 'background 0.2s ease',
+                }}
               >
-                {/* Number */}
-                <div
-                  className="font-mono font-medium mb-6 leading-none select-none"
-                  style={{ fontSize: '3.5rem', color: '#1C2052' }}
-                >
-                  {service.n}
-                </div>
-
-                {/* Title */}
-                <div className="flex items-center gap-3 mb-3">
-                  <h3
+                {/* Number + accent bar */}
+                <div className="flex items-start justify-between mb-6">
+                  <div
+                    className="font-mono font-medium leading-none select-none"
                     style={{
-                      fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
-                      fontWeight: 700,
-                      fontSize: 'clamp(1.25rem, 2vw, 1.5rem)',
-                      lineHeight: 1.15,
-                      letterSpacing: '-0.015em',
-                      color: '#F0F2FF',
+                      fontSize: '3rem',
+                      color: accentColors[i],
+                      opacity: 0.25,
                     }}
                   >
-                    {service.title}
-                  </h3>
+                    {service.n}
+                  </div>
                   {service.n === '02' && (
                     <span
-                      className="font-mono text-xs font-medium px-2.5 py-0.5 rounded-full border"
+                      className="font-mono text-xs font-medium px-2.5 py-1 rounded-full border"
                       style={{
                         background: 'rgba(232,255,71,0.08)',
                         color: '#E8FF47',
-                        borderColor: 'rgba(232,255,71,0.25)',
-                        whiteSpace: 'nowrap',
+                        borderColor: 'rgba(232,255,71,0.3)',
                       }}
                     >
-                      Nytt
+                      Ny tjeneste
                     </span>
                   )}
                 </div>
 
+                {/* Title */}
+                <h3
+                  style={{
+                    fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                    fontWeight: 700,
+                    fontSize: '1.375rem',
+                    lineHeight: 1.2,
+                    letterSpacing: '-0.015em',
+                    color: '#F0F2FF',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  {service.title}
+                </h3>
+
                 {/* Lead */}
-                <p className="font-sans text-sm leading-relaxed mb-6" style={{ color: '#6B7280' }}>
+                <p
+                  className="font-sans text-sm leading-relaxed mb-6"
+                  style={{ color: '#7880B8', lineHeight: 1.65 }}
+                >
                   {service.lead}
                 </p>
 
                 {/* Included list */}
-                <ul className="space-y-2">
+                <ul className="space-y-2.5">
                   {service.included.map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 font-sans text-sm" style={{ color: '#A8AFDB' }}>
+                    <li key={item} className="flex items-center gap-3 font-sans" style={{ color: '#A8AFDB', fontSize: '0.875rem' }}>
                       <span
-                        className="flex-shrink-0 w-4 h-4 rounded-full border flex items-center justify-center"
-                        style={{ borderColor: 'rgba(232,255,71,0.3)' }}
+                        className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
+                        style={{
+                          border: `1px solid ${accentColors[i]}44`,
+                        }}
                       >
                         <span
                           className="w-1.5 h-1.5 rounded-full"
-                          style={{ background: 'rgba(232,255,71,0.5)' }}
+                          style={{ background: `${accentColors[i]}66` }}
                         />
                       </span>
                       {item}
@@ -105,7 +124,7 @@ export function ServicesGrid() {
                   <a
                     href="#kontakt"
                     className="font-mono text-xs"
-                    style={{ color: '#E8FF47' }}
+                    style={{ color: accentColors[i] }}
                   >
                     Book en prat →
                   </a>

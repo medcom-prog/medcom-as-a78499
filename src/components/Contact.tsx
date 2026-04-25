@@ -23,15 +23,16 @@ export function Contact() {
   };
 
   const inputStyle: React.CSSProperties = {
-    background: '#0D0F1A',
-    border: '1px solid #252840',
+    background: '#0F1220',
+    border: '1px solid #353860',
     borderRadius: '0.75rem',
-    padding: '0.75rem 1rem',
+    padding: '0.875rem 1rem',
     color: '#F0F2FF',
     fontFamily: "'Inter Tight', system-ui, sans-serif",
     fontSize: '0.875rem',
     width: '100%',
     outline: 'none',
+    transition: 'border-color 0.2s ease',
   };
 
   return (
@@ -68,7 +69,7 @@ export function Contact() {
             </h2>
             <p
               className="font-sans leading-relaxed mb-10 text-base"
-              style={{ color: '#6B7280' }}
+              style={{ color: '#7880B8', maxWidth: '380px' }}
             >
               {contact.subhead}
             </p>
@@ -112,7 +113,7 @@ export function Contact() {
                 <div key={item.label} className="flex items-center gap-4">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ border: '1px solid #252840' }}
+                    style={{ border: '1px solid #353860', background: '#181B2E' }}
                   >
                     {item.icon}
                   </div>
@@ -176,119 +177,150 @@ export function Contact() {
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="rounded-2xl space-y-5"
-                style={{ background: '#181B2E', border: '1px solid #252840', padding: '2rem' }}
+                className="rounded-2xl"
+                style={{
+                  background: '#181B2E',
+                  border: '1px solid #353860',
+                  padding: '2rem',
+                  boxShadow: '0 0 40px rgba(232,255,71,0.03)',
+                }}
               >
-                {/* Name + Company */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label
-                      className="font-mono text-xs tracking-wide mb-1.5 block"
-                      style={{ color: '#555E99' }}
-                    >
-                      Navn *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      style={inputStyle}
-                      placeholder="Ola Nordmann"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="font-mono text-xs tracking-wide mb-1.5 block"
-                      style={{ color: '#555E99' }}
-                    >
-                      Bedrift
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.companyName}
-                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                      style={inputStyle}
-                      placeholder="Bedrift AS"
-                    />
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label
-                    className="font-mono text-xs tracking-wide mb-1.5 block"
-                    style={{ color: '#555E99' }}
-                  >
-                    E-post *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    style={inputStyle}
-                    placeholder="ola@bedrift.no"
-                  />
-                </div>
-
-                {/* Service selector */}
-                <div>
-                  <label
-                    className="font-mono text-xs tracking-wide mb-1.5 block"
-                    style={{ color: '#555E99' }}
-                  >
-                    Hva er du interessert i?
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {services.map((svc) => (
-                      <button
-                        key={svc}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, service: svc })}
-                        className="font-sans text-xs px-3.5 py-2 rounded-full border transition-all duration-150"
-                        style={{
-                          background: formData.service === svc ? 'rgba(232,255,71,0.1)' : '#0D0F1A',
-                          borderColor: formData.service === svc ? 'rgba(232,255,71,0.4)' : '#252840',
-                          color: formData.service === svc ? '#E8FF47' : '#555E99',
-                        }}
+                <div className="space-y-5">
+                  {/* Name + Company */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        className="font-mono text-xs tracking-wide mb-2 block"
+                        style={{ color: '#7880B8' }}
                       >
-                        {svc}
-                      </button>
-                    ))}
+                        Navn *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        style={inputStyle}
+                        placeholder="Ola Nordmann"
+                        onFocus={(e) => {
+                          (e.target as HTMLInputElement).style.borderColor = 'rgba(232,255,71,0.4)';
+                        }}
+                        onBlur={(e) => {
+                          (e.target as HTMLInputElement).style.borderColor = '#353860';
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        className="font-mono text-xs tracking-wide mb-2 block"
+                        style={{ color: '#7880B8' }}
+                      >
+                        Bedrift
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.companyName}
+                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                        style={inputStyle}
+                        placeholder="Bedrift AS"
+                        onFocus={(e) => {
+                          (e.target as HTMLInputElement).style.borderColor = 'rgba(232,255,71,0.4)';
+                        }}
+                        onBlur={(e) => {
+                          (e.target as HTMLInputElement).style.borderColor = '#353860';
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {/* Message */}
-                <div>
-                  <label
-                    className="font-mono text-xs tracking-wide mb-1.5 block"
-                    style={{ color: '#555E99' }}
+                  {/* Email */}
+                  <div>
+                    <label
+                      className="font-mono text-xs tracking-wide mb-2 block"
+                      style={{ color: '#7880B8' }}
+                    >
+                      E-post *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      style={inputStyle}
+                      placeholder="ola@bedrift.no"
+                      onFocus={(e) => {
+                        (e.target as HTMLInputElement).style.borderColor = 'rgba(232,255,71,0.4)';
+                      }}
+                      onBlur={(e) => {
+                        (e.target as HTMLInputElement).style.borderColor = '#353860';
+                      }}
+                    />
+                  </div>
+
+                  {/* Service selector */}
+                  <div>
+                    <label
+                      className="font-mono text-xs tracking-wide mb-2 block"
+                      style={{ color: '#7880B8' }}
+                    >
+                      Hva er du interessert i?
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {services.map((svc) => (
+                        <button
+                          key={svc}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, service: svc })}
+                          className="font-sans text-xs px-3.5 py-2 rounded-full border transition-all duration-150"
+                          style={{
+                            background: formData.service === svc ? 'rgba(232,255,71,0.12)' : '#0F1220',
+                            borderColor: formData.service === svc ? 'rgba(232,255,71,0.5)' : '#353860',
+                            color: formData.service === svc ? '#E8FF47' : '#7880B8',
+                          }}
+                        >
+                          {svc}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label
+                      className="font-mono text-xs tracking-wide mb-2 block"
+                      style={{ color: '#7880B8' }}
+                    >
+                      Fortell litt om prosjektet
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      style={{ ...inputStyle, resize: 'none' }}
+                      placeholder="Vi har en nettside fra 2018 som trenger en overhaling..."
+                      onFocus={(e) => {
+                        (e.target as HTMLTextAreaElement).style.borderColor = 'rgba(232,255,71,0.4)';
+                      }}
+                      onBlur={(e) => {
+                        (e.target as HTMLTextAreaElement).style.borderColor = '#353860';
+                      }}
+                    />
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={status === 'sending'}
+                    className="w-full font-sans font-semibold py-4 rounded-full text-base transition-all duration-200 disabled:opacity-60"
+                    style={{ background: '#E8FF47', color: '#0D0F1A', fontSize: '1rem' }}
                   >
-                    Fortell litt om prosjektet
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    style={{ ...inputStyle, resize: 'none' }}
-                    placeholder="Vi har en nettside fra 2018 som trenger en overhaling..."
-                  />
+                    {status === 'sending' ? 'Sender...' : 'Send melding'}
+                  </button>
+
+                  <p className="font-mono text-xs text-center" style={{ color: '#3C4480' }}>
+                    Vi svarer innen 48 timer på hverdager.
+                  </p>
                 </div>
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={status === 'sending'}
-                  className="w-full font-sans font-semibold py-4 rounded-full text-base transition-all duration-200 disabled:opacity-60"
-                  style={{ background: '#E8FF47', color: '#0D0F1A' }}
-                >
-                  {status === 'sending' ? 'Sender...' : 'Send melding'}
-                </button>
-
-                <p className="font-mono text-xs text-center" style={{ color: '#3C4480' }}>
-                  Vi svarer innen 48 timer på hverdager.
-                </p>
               </form>
             )}
           </FadeIn>

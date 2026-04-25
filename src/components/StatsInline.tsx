@@ -1,32 +1,9 @@
-import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useRef, useEffect } from 'react';
 import { FadeIn } from './FadeIn';
 
-function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.1 });
-  const motionVal = useMotionValue(0);
-  const spring = useSpring(motionVal, { damping: 40, stiffness: 200 });
-  const display = useTransform(spring, (v) => Math.round(v).toString());
-
-  useEffect(() => {
-    if (isInView) {
-      motionVal.set(value);
-    }
-  }, [isInView, motionVal, value]);
-
-  return (
-    <span ref={ref} className="tabular-nums">
-      <motion.span>{display}</motion.span>
-      {suffix}
-    </span>
-  );
-}
-
 const stats = [
-  { value: 48, suffix: 't', label: 'Responstid på hverdager' },
-  { value: 100, suffix: '%', label: 'Norskutviklet — ingen outsourcing' },
-  { value: 3, suffix: ' steg', label: 'Fra brief til lansering' },
+  { value: '48t', label: 'Responstid på hverdager' },
+  { value: '100%', label: 'Norskutviklet — ingen outsourcing' },
+  { value: '3 steg', label: 'Fra brief til lansering' },
 ];
 
 export function StatsInline() {
@@ -60,7 +37,7 @@ export function StatsInline() {
                     marginBottom: '0.5rem',
                   }}
                 >
-                  <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                  {stat.value}
                 </div>
                 <div
                   className="font-mono text-xs tracking-wide leading-snug"
