@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { FadeIn } from './FadeIn';
 
 // ============================================================
 // The "weird thing" — AIO before/after interactive demo
-// Full metrics panel with animated counters and live bar
+// Animated counters + SERP reorder + auto-plays on scroll into view
 // ============================================================
 
 function AnimatedCounter({
@@ -21,7 +21,7 @@ function AnimatedCounter({
   active: boolean;
 }) {
   const motionVal = useMotionValue(active ? to : from);
-  const spring = useSpring(motionVal, { damping: 25, stiffness: 60 });
+  const spring = useSpring(motionVal, { damping: 20, stiffness: 50 });
   const display = useTransform(spring, (v) => Math.round(v).toString());
 
   useEffect(() => {
@@ -39,8 +39,8 @@ function AnimatedCounter({
 
 function RankingBar({ value, isAfter }: { value: number; isAfter: boolean }) {
   const motionVal = useMotionValue(isAfter ? value : 8);
-  const spring = useSpring(motionVal, { damping: 25, stiffness: 60 });
-  const width = useTransform(spring, (v) => `${v}%`);
+  const spring = useSpring(motionVal, { damping: 20, stiffness: 50 });
+  const width = useTransform(spring, (v) => `${Math.min(v, 100)}%`);
 
   useEffect(() => {
     motionVal.set(value);
@@ -61,39 +61,55 @@ function RankingBar({ value, isAfter }: { value: number; isAfter: boolean }) {
   );
 }
 
-// Mini SERP component — shows ranking position reordering
 function SerpList({ isAfter }: { isAfter: boolean }) {
   const positions = isAfter
     ? ['Din bedrift', 'Konkurrent A', 'Konkurrent B', 'Konkurrent C']
     : ['Konkurrent A', 'Konkurrent B', 'Konkurrent C', 'Din bedrift'];
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {positions.map((name, i) => {
         const isOwn = name === 'Din bedrift';
         return (
           <motion.div
             key={name}
             layout
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center gap-2.5 rounded-lg px-3 py-1.5"
+            initial={false}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: i * 0.05 }}
+            className="flex items-center gap-2.5 rounded-lg px-3 py-2"
             style={{
-              background: isOwn ? (isAfter ? 'rgba(232,255,71,0.08)' : 'rgba(37,40,64,0.4)') : '#0D0F1A',
-              border: isOwn ? (isAfter ? '1px solid rgba(232,255,71,0.25)' : '1px solid #252840') : '1px solid transparent',
+              background: isOwn
+                ? isAfter
+                  ? 'rgba(232,255,71,0.08)'
+                  : 'rgba(37,40,64,0.4)'
+                : 'rgba(13,15,26,0.6)',
+              border: isOwn
+                ? isAfter
+                  ? '1px solid rgba(232,255,71,0.25)'
+                  : '1px solid #252840'
+                : '1px solid transparent',
             }}
           >
             <span
-              className="font-mono text-xs w-5 text-center"
+              className="font-mono text-xs w-5 text-center flex-shrink-0"
               style={{ color: isOwn && isAfter ? '#E8FF47' : '#555E99' }}
             >
               {i + 1}
             </span>
             <span
               className="font-sans text-xs"
-              style={{ color: isOwn ? (isAfter ? '#E8FF47' : '#555E99') : '#7880B8' }}
+              style={{ color: isOwn ? (isAfter ? '#E8FF47' : '#7880B8') : '#7880B8' }}
             >
               {name}
             </span>
+            {isOwn && isAfter && (
+              <span
+                className="ml-auto font-mono text-xs px-1.5 py-0.5 rounded"
+                style={{ background: 'rgba(232,255,71,0.12)', color: '#E8FF47' }}
+              >
+                ↑ 44 plasser
+              </span>
+            )}
           </motion.div>
         );
       })}
@@ -102,13 +118,22 @@ function SerpList({ isAfter }: { isAfter: boolean }) {
 }
 
 export function AioReveal() {
-  const [active, setActive] = useState(false); // false = before, true = after
-  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+
+  // Auto-play: when section comes into view, switch to "after" after 1.2s
+  useEffect(() => {
+    if (isInView && !active) {
+      const timer = setTimeout(() => setActive(true), 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section
       id="aio"
-      ref={ref}
+      ref={sectionRef}
       style={{
         background: '#0A0D1C',
         borderTop: '1px solid #252840',
@@ -141,8 +166,8 @@ export function AioReveal() {
             <span style={{ color: '#E8FF47' }}>for en konkret nettside.</span>
           </h2>
           <p className="font-sans text-sm leading-relaxed" style={{ color: '#7880B8' }}>
-            Klikk «Med AIO» og se tallene bevege seg. AIO justerer innholdet ditt
-            kontinuerlig basert på hva Google belønner akkurat nå.
+            Tallene animeres automatisk når du scroller hit. Klikk «Uten AIO» og
+            tilbake for å se forskjellen.
           </p>
         </FadeIn>
 
@@ -183,7 +208,7 @@ export function AioReveal() {
             </button>
           </div>
 
-          {/* Main demo panel */}
+          {/* Demo panel */}
           <div
             className="rounded-3xl overflow-hidden"
             style={{
@@ -203,10 +228,16 @@ export function AioReveal() {
                 transition: 'background 0.4s ease',
               }}
             >
-              <span className="font-mono text-xs" style={{ color: active ? '#E8FF47' : '#555E99' }}>
+              <span
+                className="font-mono text-xs"
+                style={{ color: active ? '#E8FF47' : '#555E99' }}
+              >
                 {active ? 'Med AIO' : 'Uten AIO'}
               </span>
-              <span
+              <motion.span
+                key={active ? 'on' : 'off'}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
                 className="font-mono text-xs px-3 py-1 rounded-full"
                 style={{
                   background: active ? 'rgba(232,255,71,0.12)' : 'rgba(60,68,128,0.3)',
@@ -214,10 +245,10 @@ export function AioReveal() {
                 }}
               >
                 {active ? '● AIO aktivt' : '○ Ingen AIO'}
-              </span>
+              </motion.span>
             </div>
 
-            {/* Metrics + SERP side by side */}
+            {/* Content */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
               {/* Left: metrics */}
               <div style={{ borderRight: '1px solid #252840' }}>
@@ -234,14 +265,32 @@ export function AioReveal() {
                       lineHeight: 1,
                       color: active ? '#E8FF47' : '#555E99',
                       transition: 'color 0.3s ease',
-                      marginBottom: '0.5rem',
                     }}
                   >
-                    {active ? 'Topp 3' : (
-                      <span className="tabular-nums">
-                        #<AnimatedCounter from={3} to={47} prefix="" suffix="" active={!active} />
-                      </span>
-                    )}
+                    <AnimatePresence mode="wait">
+                      {active ? (
+                        <motion.span
+                          key="after"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          Topp 3
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="before"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.3 }}
+                          className="tabular-nums"
+                        >
+                          #<AnimatedCounter from={3} to={47} active={!active} />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -258,18 +307,16 @@ export function AioReveal() {
                       lineHeight: 1,
                       color: active ? '#E8FF47' : '#555E99',
                       transition: 'color 0.3s ease',
-                      marginBottom: '0.5rem',
                     }}
+                    className="tabular-nums"
                   >
-                    <span className="tabular-nums">
-                      <AnimatedCounter from={23} to={340} suffix={active ? '+' : ''} active={active} />
-                    </span>
+                    <AnimatedCounter from={23} to={340} suffix={active ? '+' : ''} active={active} />
                   </div>
                 </div>
 
-                {/* Synlighet */}
+                {/* Visibility */}
                 <div className="p-6">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="font-mono text-xs" style={{ color: '#555E99' }}>
                       Søkesynlighet
                     </span>
@@ -284,20 +331,18 @@ export function AioReveal() {
                 </div>
               </div>
 
-              {/* Right: SERP preview */}
+              {/* Right: SERP */}
               <div className="p-6">
                 <div className="font-mono text-xs mb-4" style={{ color: '#555E99' }}>
-                  Google-resultater — live
+                  Google-resultater
                 </div>
-                <AnimatePresence mode="popLayout">
-                  <SerpList key={active ? 'after' : 'before'} isAfter={active} />
-                </AnimatePresence>
+                <SerpList isAfter={active} />
 
                 {active && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
+                    transition={{ delay: 0.6 }}
                     className="mt-6 pt-5"
                     style={{ borderTop: '1px solid #252840' }}
                   >
