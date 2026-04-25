@@ -20,19 +20,30 @@ export function Nav() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navStyle = {
+    position: 'fixed' as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 50,
+    transition: 'all 0.3s ease',
+    background: scrolled ? 'rgba(13,15,26,0.92)' : 'transparent',
+    backdropFilter: scrolled ? 'blur(12px)' : 'none',
+    borderBottom: scrolled ? '1px solid #252840' : '1px solid transparent',
+  };
+
   return (
     <>
       <motion.header
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-bg/90 backdrop-blur-md border-b border-bg-border'
-            : 'bg-transparent'
-        }`}
+        style={navStyle}
       >
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+        <div
+          className="container mx-auto px-6 flex items-center justify-between"
+          style={{ height: '4rem' }}
+        >
           <Wordmark variant="dark" />
 
           {/* Desktop nav */}
@@ -41,17 +52,31 @@ export function Nav() {
               <a
                 key={link.href}
                 href={link.href}
-                className="font-sans text-sm font-medium text-ink-300 hover:text-ink-100 transition-colors duration-200"
+                className="font-sans text-sm font-medium transition-colors duration-200"
+                style={{ color: '#7880B8' }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = '#F0F2FF';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.color = '#7880B8';
+                }}
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center">
             <a
               href="#kontakt"
-              className="inline-flex items-center gap-2 bg-accent text-bg px-5 py-2 rounded-full font-sans font-600 text-sm hover:bg-accent-soft transition-colors duration-200"
+              className="inline-flex items-center gap-2 font-sans font-semibold text-sm px-5 py-2 rounded-full transition-all duration-200"
+              style={{ background: '#E8FF47', color: '#0D0F1A' }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.background = '#F2FF85';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.background = '#E8FF47';
+              }}
             >
               Få et tilbud
             </a>
@@ -64,19 +89,25 @@ export function Nav() {
             aria-label={menuOpen ? 'Lukk meny' : 'Åpne meny'}
           >
             <span
-              className={`block w-5 h-0.5 bg-ink-100 transition-all duration-300 ${
-                menuOpen ? 'rotate-45 translate-y-2' : ''
-              }`}
+              className="block w-5 h-0.5 transition-all duration-300"
+              style={{
+                background: '#F0F2FF',
+                transform: menuOpen ? 'rotate(45deg) translate(2px, 8px)' : 'none',
+              }}
             />
             <span
-              className={`block w-5 h-0.5 bg-ink-100 transition-all duration-300 ${
-                menuOpen ? 'opacity-0' : ''
-              }`}
+              className="block w-5 h-0.5 transition-all duration-300"
+              style={{
+                background: '#F0F2FF',
+                opacity: menuOpen ? 0 : 1,
+              }}
             />
             <span
-              className={`block w-5 h-0.5 bg-ink-100 transition-all duration-300 ${
-                menuOpen ? '-rotate-45 -translate-y-2' : ''
-              }`}
+              className="block w-5 h-0.5 transition-all duration-300"
+              style={{
+                background: '#F0F2FF',
+                transform: menuOpen ? 'rotate(-45deg) translate(2px, -8px)' : 'none',
+              }}
             />
           </button>
         </div>
@@ -90,14 +121,23 @@ export function Nav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-16 left-0 right-0 z-40 bg-bg border-b border-bg-border md:hidden"
+            style={{
+              position: 'fixed',
+              top: '4rem',
+              left: 0,
+              right: 0,
+              zIndex: 40,
+              background: '#0D0F1A',
+              borderBottom: '1px solid #252840',
+            }}
           >
             <nav className="container mx-auto px-6 py-6 flex flex-col gap-4">
               {links.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="font-sans text-base font-medium text-ink-200 hover:text-accent transition-colors py-2"
+                  className="font-sans text-base font-medium py-2 transition-colors"
+                  style={{ color: '#D4D8F5' }}
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.label}
@@ -105,7 +145,8 @@ export function Nav() {
               ))}
               <a
                 href="#kontakt"
-                className="inline-flex items-center justify-center bg-accent text-bg px-5 py-3 rounded-full font-sans font-600 text-sm mt-2"
+                className="inline-flex items-center justify-center font-sans font-semibold text-sm px-5 py-3 rounded-full mt-2"
+                style={{ background: '#E8FF47', color: '#0D0F1A' }}
                 onClick={() => setMenuOpen(false)}
               >
                 Få et tilbud

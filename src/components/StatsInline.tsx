@@ -30,9 +30,16 @@ const stats = [
 
 export function StatsInline() {
   return (
-    <section className="bg-bg-soft border-y border-bg-border py-16">
+    <section
+      style={{
+        background: '#13162A',
+        borderTop: '1px solid #252840',
+        borderBottom: '1px solid #252840',
+        padding: '4rem 0',
+      }}
+    >
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 md:divide-x md:divide-bg-border">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -44,12 +51,28 @@ export function StatsInline() {
                 ease: [0.22, 1, 0.36, 1],
                 delay: i * 0.1,
               }}
-              className="flex flex-col items-center text-center md:px-8"
+              className="flex flex-col items-center text-center"
+              style={{
+                padding: '0 2rem',
+                borderRight: i < 2 ? '1px solid #252840' : 'none',
+              }}
             >
-              <div className="font-display font-800 text-4xl md:text-5xl text-ink-100 mb-2">
+              <div
+                style={{
+                  fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                  fontWeight: 800,
+                  fontSize: 'clamp(2.5rem, 4vw, 3.5rem)',
+                  color: '#F0F2FF',
+                  lineHeight: 1,
+                  marginBottom: '0.5rem',
+                }}
+              >
                 <AnimatedNumber value={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="font-mono text-xs text-ink-500 tracking-wide leading-snug max-w-[150px]">
+              <div
+                className="font-mono text-xs tracking-wide leading-snug"
+                style={{ color: '#555E99', maxWidth: '150px' }}
+              >
                 {stat.label}
               </div>
             </motion.div>

@@ -12,6 +12,7 @@ body {
   font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 ::selection {
@@ -25,6 +26,11 @@ body {
   border-radius: 8px;
 }
 button:focus-visible, a:focus-visible { outline-offset: 3px; }
+
+/* Font rendering */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+}
 
 /* Ticker animation for logo strip */
 @keyframes ticker {

@@ -28,16 +28,21 @@ export function Hero() {
     >
       {/* Background grid */}
       <div
-        className="absolute inset-0 opacity-[0.04]"
+        className="absolute inset-0 opacity-[0.035]"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(232,255,71,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(232,255,71,0.5) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+            'linear-gradient(rgba(232,255,71,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(232,255,71,0.6) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
         }}
       />
 
       {/* Glow blob */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-accent/5 blur-[120px] pointer-events-none" />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse, rgba(232,255,71,0.06) 0%, transparent 70%)',
+        }}
+      />
 
       <div className="container mx-auto px-6 relative z-10">
         <motion.div
@@ -48,19 +53,28 @@ export function Hero() {
         >
           {/* Eyebrow */}
           {hero.eyebrow && (
-            <motion.div variants={itemVariants} className="mb-6">
-              <span className="inline-flex items-center gap-2 font-mono text-xs tracking-widest text-accent/80 uppercase border border-accent/20 rounded-full px-4 py-1.5">
+            <motion.div variants={itemVariants} className="mb-8">
+              <span className="inline-flex items-center gap-2 font-mono text-xs tracking-widest text-accent/80 uppercase border border-accent/20 rounded-full px-4 py-2 bg-accent/5">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                 {hero.eyebrow}
               </span>
             </motion.div>
           )}
 
-          {/* Headline — staggered word-by-word */}
+          {/* Headline — line by line stagger */}
           <div className="mb-6">
             {lines.map((line, li) => (
               <motion.div key={li} variants={itemVariants}>
-                <h1 className="font-display font-700 text-display-xl text-ink-100 leading-[1.0]">
+                <h1
+                  style={{
+                    fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                    fontWeight: 800,
+                    fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
+                    lineHeight: 1.0,
+                    letterSpacing: '-0.03em',
+                    color: '#F0F2FF',
+                  }}
+                >
                   {line}
                 </h1>
               </motion.div>
@@ -70,9 +84,10 @@ export function Hero() {
           {/* Subhead */}
           <motion.p
             variants={itemVariants}
-            className="font-sans text-lg md:text-xl text-ink-300 leading-relaxed max-w-2xl mx-auto mb-10"
+            className="font-sans text-lg md:text-xl leading-relaxed max-w-xl mx-auto mb-10"
+            style={{ color: '#A8AFDB' }}
           >
-            {hero.subhead}
+            Nettsider + AIO-drevet SEO — vi sørger for at Google finner bedriften din, automatisk.
           </motion.p>
 
           {/* CTAs */}
@@ -82,7 +97,8 @@ export function Hero() {
           >
             <a
               href={hero.primary_cta.href}
-              className="group inline-flex items-center gap-2 bg-accent text-bg font-sans font-600 px-7 py-3.5 rounded-full text-base hover:bg-accent-soft transition-all duration-200 hover:scale-105"
+              className="group inline-flex items-center gap-2 font-sans font-semibold px-8 py-4 rounded-full text-base hover:scale-105 transition-all duration-200"
+              style={{ background: '#E8FF47', color: '#0D0F1A' }}
             >
               {hero.primary_cta.label}
               <svg
@@ -104,7 +120,8 @@ export function Hero() {
             {hero.secondary_cta && (
               <a
                 href={hero.secondary_cta.href}
-                className="inline-flex items-center gap-2 text-ink-300 font-sans font-500 text-base hover:text-ink-100 transition-colors duration-200 group"
+                className="inline-flex items-center gap-2 font-sans font-medium text-base hover:opacity-80 transition-opacity duration-200 group"
+                style={{ color: '#7880B8' }}
               >
                 {hero.secondary_cta.label}
                 <svg
@@ -129,7 +146,8 @@ export function Hero() {
           {/* Stats row */}
           <motion.div
             variants={itemVariants}
-            className="mt-16 pt-10 border-t border-bg-border grid grid-cols-3 gap-8 max-w-lg mx-auto"
+            className="mt-16 pt-10 grid grid-cols-3 gap-8 max-w-lg mx-auto"
+            style={{ borderTop: '1px solid rgba(37,40,64,1)' }}
           >
             {[
               { value: '48t', label: 'Responstid' },
@@ -137,10 +155,20 @@ export function Hero() {
               { value: '100%', label: 'Norsk team' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="font-display font-700 text-2xl md:text-3xl text-ink-100">
+                <div
+                  style={{
+                    fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                    fontWeight: 800,
+                    fontSize: '1.875rem',
+                    color: '#F0F2FF',
+                  }}
+                >
                   {stat.value}
                 </div>
-                <div className="font-mono text-xs text-ink-400 tracking-wide mt-1">
+                <div
+                  className="font-mono text-xs tracking-wide mt-1"
+                  style={{ color: '#555E99' }}
+                >
                   {stat.label}
                 </div>
               </div>
@@ -156,8 +184,15 @@ export function Hero() {
         transition={{ delay: 1.5, duration: 0.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="font-mono text-xs text-ink-500 tracking-widest">SCROLL</span>
-        <div className="w-px h-10 bg-gradient-to-b from-ink-500 to-transparent" />
+        <span className="font-mono text-xs tracking-widest" style={{ color: '#3C4480' }}>
+          SCROLL
+        </span>
+        <div
+          className="w-px h-10"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(60,68,128,0.8), transparent)',
+          }}
+        />
       </motion.div>
     </section>
   );
