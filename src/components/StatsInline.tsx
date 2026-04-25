@@ -1,9 +1,10 @@
 import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useRef, useEffect } from 'react';
+import { FadeIn } from './FadeIn';
 
 function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
   const motionVal = useMotionValue(0);
   const spring = useSpring(motionVal, { damping: 40, stiffness: 200 });
   const display = useTransform(spring, (v) => Math.round(v).toString());
@@ -39,43 +40,36 @@ export function StatsInline() {
       }}
     >
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{
-                duration: 0.5,
-                ease: [0.22, 1, 0.36, 1],
-                delay: i * 0.1,
-              }}
-              className="flex flex-col items-center text-center"
-              style={{
-                padding: '0 2rem',
-                borderRight: i < 2 ? '1px solid #252840' : 'none',
-              }}
-            >
+            <FadeIn key={stat.label} delay={i * 0.1}>
               <div
+                className="flex flex-col items-center text-center"
                 style={{
-                  fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
-                  fontWeight: 800,
-                  fontSize: 'clamp(2.5rem, 4vw, 3.5rem)',
-                  color: '#F0F2FF',
-                  lineHeight: 1,
-                  marginBottom: '0.5rem',
+                  padding: '0 1.5rem',
+                  borderRight: i < 2 ? '1px solid #252840' : 'none',
                 }}
               >
-                <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                <div
+                  style={{
+                    fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                    fontWeight: 800,
+                    fontSize: 'clamp(2.5rem, 4vw, 3.5rem)',
+                    color: '#F0F2FF',
+                    lineHeight: 1,
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  <AnimatedNumber value={stat.value} suffix={stat.suffix} />
+                </div>
+                <div
+                  className="font-mono text-xs tracking-wide leading-snug"
+                  style={{ color: '#555E99', maxWidth: '150px' }}
+                >
+                  {stat.label}
+                </div>
               </div>
-              <div
-                className="font-mono text-xs tracking-wide leading-snug"
-                style={{ color: '#555E99', maxWidth: '150px' }}
-              >
-                {stat.label}
-              </div>
-            </motion.div>
+            </FadeIn>
           ))}
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { useState, FormEvent } from 'react';
-import { motion } from 'framer-motion';
+import { FadeIn } from './FadeIn';
 import { site } from '../site.config';
 
 export function Contact() {
   const { contact, company } = site;
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
   const [formData, setFormData] = useState({
     name: '',
     companyName: '',
@@ -22,7 +22,7 @@ export function Contact() {
     setStatus('sent');
   };
 
-  const inputStyle = {
+  const inputStyle: React.CSSProperties = {
     background: '#0D0F1A',
     border: '1px solid #252840',
     borderRadius: '0.75rem',
@@ -46,12 +46,7 @@ export function Contact() {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
           {/* Left — info */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <FadeIn direction="left">
             <div
               className="font-mono text-xs tracking-widest uppercase mb-4"
               style={{ color: 'rgba(232,255,71,0.7)' }}
@@ -62,7 +57,7 @@ export function Contact() {
               style={{
                 fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
                 fontWeight: 800,
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontSize: 'clamp(1.75rem, 3vw, 3rem)',
                 lineHeight: 1.05,
                 letterSpacing: '-0.025em',
                 color: '#F0F2FF',
@@ -73,7 +68,7 @@ export function Contact() {
             </h2>
             <p
               className="font-sans leading-relaxed mb-10 text-base"
-              style={{ color: '#555E99' }}
+              style={{ color: '#6B7280' }}
             >
               {contact.subhead}
             </p>
@@ -128,14 +123,8 @@ export function Contact() {
                     {item.href ? (
                       <a
                         href={item.href}
-                        className="font-sans text-sm transition-colors"
+                        className="font-sans text-sm"
                         style={{ color: '#D4D8F5' }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLAnchorElement).style.color = '#E8FF47';
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLAnchorElement).style.color = '#D4D8F5';
-                        }}
                       >
                         {item.value}
                       </a>
@@ -148,15 +137,10 @@ export function Contact() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </FadeIn>
 
           {/* Right — form */}
-          <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          >
+          <FadeIn direction="right" delay={0.1}>
             {status === 'sent' ? (
               <div
                 className="rounded-2xl p-10 text-center"
@@ -185,15 +169,15 @@ export function Contact() {
                 >
                   Melding sendt!
                 </h3>
-                <p className="font-sans text-sm" style={{ color: '#555E99' }}>
+                <p className="font-sans text-sm" style={{ color: '#6B7280' }}>
                   Vi svarer innen 48 timer på hverdager.
                 </p>
               </div>
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="rounded-2xl p-8 space-y-5"
-                style={{ background: '#181B2E', border: '1px solid #252840' }}
+                className="rounded-2xl space-y-5"
+                style={{ background: '#181B2E', border: '1px solid #252840', padding: '2rem' }}
               >
                 {/* Name + Company */}
                 <div className="grid grid-cols-2 gap-4">
@@ -298,16 +282,6 @@ export function Contact() {
                   disabled={status === 'sending'}
                   className="w-full font-sans font-semibold py-4 rounded-full text-base transition-all duration-200 disabled:opacity-60"
                   style={{ background: '#E8FF47', color: '#0D0F1A' }}
-                  onMouseEnter={(e) => {
-                    if (status !== 'sending') {
-                      (e.currentTarget as HTMLButtonElement).style.background = '#F2FF85';
-                      (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.01)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.background = '#E8FF47';
-                    (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
-                  }}
                 >
                   {status === 'sending' ? 'Sender...' : 'Send melding'}
                 </button>
@@ -317,7 +291,7 @@ export function Contact() {
                 </p>
               </form>
             )}
-          </motion.div>
+          </FadeIn>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FadeIn } from './FadeIn';
 
 // The "weird thing" — interactive AIO demo
 // Shows before/after: without AIO vs with AIO
@@ -68,13 +69,7 @@ export function AioReveal() {
     >
       <div className="container mx-auto px-6">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-12 max-w-2xl"
-        >
+        <FadeIn className="mb-12" style={{ maxWidth: '40rem' }}>
           <div
             className="font-mono text-xs tracking-widest uppercase mb-3"
             style={{ color: 'rgba(232,255,71,0.7)' }}
@@ -95,19 +90,14 @@ export function AioReveal() {
             Hva AI-optimalisert SEO
             <br />faktisk gjør for deg.
           </h2>
-          <p className="font-sans leading-relaxed" style={{ color: '#555E99' }}>
+          <p className="font-sans leading-relaxed" style={{ color: '#6B7280' }}>
             AIO er ikke bare SEO — det er kontinuerlig AI-drevet optimalisering som
             justerer innholdet ditt automatisk basert på hva Google belønner akkurat nå.
           </p>
-        </motion.div>
+        </FadeIn>
 
         {/* Interactive toggle + card */}
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-        >
+        <FadeIn delay={0.1}>
           {/* Toggle buttons */}
           <div
             className="flex items-center gap-1 w-fit mb-8 p-1 rounded-full"
@@ -136,7 +126,7 @@ export function AioReveal() {
           </div>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" style={{ maxWidth: '56rem' }}>
             {/* Metrics card */}
             <div
               className="rounded-2xl p-8"
@@ -224,7 +214,7 @@ export function AioReveal() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                  className="h-full flex flex-col justify-between"
+                  className="h-full flex flex-col"
                 >
                   <div>
                     <div
@@ -271,8 +261,8 @@ export function AioReveal() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
-                      className="mt-6 pt-5"
-                      style={{ borderTop: '1px solid #252840' }}
+                      className="mt-auto pt-5"
+                      style={{ borderTop: '1px solid #252840', marginTop: '1.5rem' }}
                     >
                       <a
                         href="#kontakt"
@@ -287,7 +277,7 @@ export function AioReveal() {
               </AnimatePresence>
             </div>
           </div>
-        </motion.div>
+        </FadeIn>
       </div>
     </section>
   );

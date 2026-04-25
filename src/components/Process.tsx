@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { FadeIn } from './FadeIn';
 
 const steps = [
   {
@@ -22,13 +22,7 @@ export function Process() {
   return (
     <section id="prosess" style={{ background: '#0D0F1A', padding: '6rem 0' }}>
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-16"
-        >
+        <FadeIn className="mb-16">
           <div
             className="font-mono text-xs tracking-widest uppercase mb-3"
             style={{ color: 'rgba(232,255,71,0.7)' }}
@@ -48,85 +42,55 @@ export function Process() {
             Fra idé til nettside.{' '}
             <span style={{ color: '#555E99' }}>På tre steg.</span>
           </h2>
-        </motion.div>
+        </FadeIn>
 
         {/* Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, i) => (
-            <motion.div
-              key={step.n}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{
-                duration: 0.5,
-                ease: [0.22, 1, 0.36, 1],
-                delay: i * 0.1,
-              }}
-              className="relative"
-              style={{ padding: '2rem 2rem 2rem 0' }}
-            >
-              {/* Connector line (only between items) */}
-              {i < 2 && (
+            <FadeIn key={step.n} delay={i * 0.1}>
+              <div>
+                {/* Number bubble */}
                 <div
-                  className="hidden md:block absolute top-8 right-0 w-8 h-px"
-                  style={{ background: '#252840' }}
-                />
-              )}
-
-              {/* Number bubble */}
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center mb-6 relative z-10"
-                style={{ border: '2px solid #252840', background: '#0D0F1A' }}
-              >
-                <span
-                  className="font-mono font-medium text-xl"
-                  style={{ color: '#F0F2FF' }}
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
+                  style={{ border: '2px solid #252840', background: '#0D0F1A' }}
                 >
-                  {step.n}
-                </span>
-              </div>
+                  <span
+                    className="font-mono font-medium text-xl"
+                    style={{ color: '#E8FF47' }}
+                  >
+                    {step.n}
+                  </span>
+                </div>
 
-              <h3
-                style={{
-                  fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
-                  fontWeight: 700,
-                  fontSize: 'clamp(1.25rem, 2vw, 1.75rem)',
-                  lineHeight: 1.15,
-                  letterSpacing: '-0.015em',
-                  color: '#F0F2FF',
-                  marginBottom: '0.75rem',
-                }}
-              >
-                {step.title}
-              </h3>
-              <p className="font-sans text-sm leading-relaxed" style={{ color: '#555E99' }}>
-                {step.desc}
-              </p>
-            </motion.div>
+                <h3
+                  style={{
+                    fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                    fontWeight: 700,
+                    fontSize: '1.5rem',
+                    lineHeight: 1.15,
+                    letterSpacing: '-0.015em',
+                    color: '#F0F2FF',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  {step.title}
+                </h3>
+                <p className="font-sans text-sm leading-relaxed" style={{ color: '#6B7280' }}>
+                  {step.desc}
+                </p>
+              </div>
+            </FadeIn>
           ))}
         </div>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-          className="mt-12"
-        >
+        <FadeIn delay={0.3} className="mt-12">
           <a
             href="#kontakt"
             className="inline-flex items-center gap-2 font-sans text-sm font-semibold rounded-full px-6 py-3 transition-colors duration-200"
             style={{
               color: '#E8FF47',
               border: '1px solid rgba(232,255,71,0.3)',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(232,255,71,0.05)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
             }}
           >
             Book en gjennomgang
@@ -140,7 +104,7 @@ export function Process() {
               />
             </svg>
           </a>
-        </motion.div>
+        </FadeIn>
       </div>
     </section>
   );

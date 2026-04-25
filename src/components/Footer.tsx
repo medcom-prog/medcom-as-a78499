@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { FadeIn } from './FadeIn';
 import { site } from '../site.config';
 import { Wordmark } from './Wordmark';
 
@@ -17,13 +17,7 @@ export function Footer() {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           {/* Brand column */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="md:col-span-1"
-          >
+          <FadeIn className="md:col-span-1">
             <Wordmark variant="dark" className="mb-4" />
             <p
               className="font-sans text-sm leading-relaxed"
@@ -31,17 +25,11 @@ export function Footer() {
             >
               {footer.tagline}
             </p>
-          </motion.div>
+          </FadeIn>
 
           {/* Link columns */}
           {footer.columns.map((col, i) => (
-            <motion.div
-              key={col.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: (i + 1) * 0.06 }}
-            >
+            <FadeIn key={col.title} delay={(i + 1) * 0.06}>
               <h4
                 className="font-mono text-xs tracking-widest uppercase mb-4"
                 style={{ color: '#555E99' }}
@@ -55,19 +43,13 @@ export function Footer() {
                       href={href}
                       className="font-sans text-sm transition-colors duration-150"
                       style={{ color: '#7880B8' }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLAnchorElement).style.color = '#F0F2FF';
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLAnchorElement).style.color = '#7880B8';
-                      }}
                     >
                       {label}
                     </a>
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </FadeIn>
           ))}
         </div>
 
@@ -79,7 +61,7 @@ export function Footer() {
           <span className="font-mono text-xs" style={{ color: '#3C4480' }}>
             {footer.status_line}
           </span>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <span className="font-mono text-xs" style={{ color: '#3C4480' }}>
               {company.email}
             </span>
