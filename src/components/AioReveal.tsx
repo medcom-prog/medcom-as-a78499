@@ -1,67 +1,74 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { FadeIn } from './FadeIn';
 
-// The "weird thing" — interactive AIO demo
-// Shows before/after: without AIO vs with AIO
+// ============================================================
+// The "weird thing" — AIO before/after interactive demo
+// ============================================================
 
-const beforeData = {
-  label: 'Uten AIO',
-  rank: '#47',
-  rankLabel: 'Google-rangering',
-  clicks: '23',
-  clicksLabel: 'klikk / måned',
-  visibility: 8,
-  items: [
-    { text: 'Ingen rangeringsstrategi', ok: false },
-    { text: 'Statisk innhold', ok: false },
-    { text: 'Ingen søkeordanalyse', ok: false },
-    { text: 'Manuell oppdatering', ok: false },
-  ],
+const states = {
+  before: {
+    label: 'Uten AIO',
+    rank: { text: '#47', isGood: false },
+    clicks: { text: '23', isGood: false },
+    visibility: 8,
+    items: [
+      { text: 'Ingen rangeringsstrategi', ok: false },
+      { text: 'Statisk innhold', ok: false },
+      { text: 'Ingen søkeordanalyse', ok: false },
+      { text: 'Manuell oppdatering', ok: false },
+    ],
+  },
+  after: {
+    label: 'Med AIO',
+    rank: { text: 'Topp 3', isGood: true },
+    clicks: { text: '340+', isGood: true },
+    visibility: 87,
+    items: [
+      { text: 'AI-optimalisert innhold', ok: true },
+      { text: 'Automatiske oppdateringer', ok: true },
+      { text: 'Søkeordanalyse hver uke', ok: true },
+      { text: 'Rangeringsrapporter', ok: true },
+    ],
+  },
 };
 
-const afterData = {
-  label: 'Med AIO',
-  rank: 'Topp 3',
-  rankLabel: 'Google-rangering',
-  clicks: '340+',
-  clicksLabel: 'klikk / måned',
-  visibility: 87,
-  items: [
-    { text: 'AI-optimalisert innhold', ok: true },
-    { text: 'Automatiske oppdateringer', ok: true },
-    { text: 'Søkeordanalyse hver uke', ok: true },
-    { text: 'Rangeringsrapporter', ok: true },
-  ],
-};
+type StateKey = keyof typeof states;
 
-function VisibilityBar({ value, active }: { value: number; active: boolean }) {
+function RankingBar({ value, isAfter }: { value: number; isAfter: boolean }) {
+  const motionVal = useMotionValue(0);
+  const spring = useSpring(motionVal, { damping: 30, stiffness: 80 });
+  const width = useTransform(spring, (v) => `${v}%`);
+
+  useEffect(() => {
+    motionVal.set(value);
+  }, [value, motionVal]);
+
   return (
-    <div
-      className="w-full h-1.5 rounded-full overflow-hidden"
-      style={{ background: '#252840' }}
-    >
+    <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#252840' }}>
       <motion.div
         className="h-full rounded-full"
-        style={{ background: active ? '#E8FF47' : '#555E99' }}
-        initial={{ width: 0 }}
-        animate={{ width: `${value}%` }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        style={{
+          width,
+          background: isAfter
+            ? 'linear-gradient(90deg, #E8FF47 0%, #C8DF00 100%)'
+            : '#3C4480',
+        }}
       />
     </div>
   );
 }
 
 export function AioReveal() {
-  const [active, setActive] = useState<'before' | 'after'>('before');
-  const data = active === 'before' ? beforeData : afterData;
+  const [active, setActive] = useState<StateKey>('before');
+  const data = states[active];
   const isAfter = active === 'after';
 
   return (
     <section
       id="aio"
       style={{
-        background: '#13162A',
+        background: '#0A0D1C',
         borderTop: '1px solid #252840',
         borderBottom: '1px solid #252840',
         padding: '6rem 0',
@@ -69,7 +76,7 @@ export function AioReveal() {
     >
       <div className="container mx-auto px-6">
         {/* Header */}
-        <FadeIn className="mb-12" style={{ maxWidth: '40rem' }}>
+        <FadeIn style={{ maxWidth: '40rem', marginBottom: '3rem' }}>
           <div
             className="font-mono text-xs tracking-widest uppercase mb-3"
             style={{ color: 'rgba(232,255,71,0.7)' }}
@@ -80,202 +87,214 @@ export function AioReveal() {
             style={{
               fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
               fontWeight: 800,
-              fontSize: 'clamp(2rem, 4vw, 3.5rem)',
-              lineHeight: 1.05,
+              fontSize: 'clamp(1.75rem, 4vw, 3.25rem)',
+              lineHeight: 1.08,
               letterSpacing: '-0.025em',
               color: '#F0F2FF',
               marginBottom: '1rem',
             }}
           >
-            Hva AI-optimalisert SEO
-            <br />faktisk gjør for deg.
+            Se hva AIO gjør
+            <br />
+            <span style={{ color: '#E8FF47' }}>for en konkret nettside.</span>
           </h2>
-          <p className="font-sans leading-relaxed" style={{ color: '#6B7280' }}>
-            AIO er ikke bare SEO — det er kontinuerlig AI-drevet optimalisering som
-            justerer innholdet ditt automatisk basert på hva Google belønner akkurat nå.
+          <p className="font-sans text-sm leading-relaxed" style={{ color: '#7880B8' }}>
+            Klikk og se forskjellen. AIO justerer innholdet ditt automatisk
+            basert på hva Google belønner akkurat nå.
           </p>
         </FadeIn>
 
-        {/* Interactive toggle + card */}
         <FadeIn delay={0.1}>
-          {/* Toggle buttons */}
+          {/* Large toggle */}
           <div
-            className="flex items-center gap-1 w-fit mb-8 p-1 rounded-full"
-            style={{ background: '#0D0F1A', border: '1px solid #252840' }}
+            className="flex items-center gap-0 mb-10 w-fit"
+            style={{
+              background: '#13162A',
+              border: '1px solid #252840',
+              borderRadius: '9999px',
+              padding: '4px',
+            }}
           >
-            <button
-              onClick={() => setActive('before')}
-              className="font-sans text-sm font-medium px-5 py-2 rounded-full transition-all duration-200"
-              style={{
-                background: active === 'before' ? '#181B2E' : 'transparent',
-                color: active === 'before' ? '#F0F2FF' : '#555E99',
-              }}
-            >
-              Uten AIO
-            </button>
-            <button
-              onClick={() => setActive('after')}
-              className="font-sans text-sm font-medium px-5 py-2 rounded-full transition-all duration-200"
-              style={{
-                background: active === 'after' ? '#E8FF47' : 'transparent',
-                color: active === 'after' ? '#0D0F1A' : '#555E99',
-              }}
-            >
-              Med AIO
-            </button>
+            {(['before', 'after'] as StateKey[]).map((key) => {
+              const isCurrent = active === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActive(key)}
+                  className="relative font-sans font-semibold px-6 py-3 rounded-full transition-all duration-300"
+                  style={{
+                    background: isCurrent
+                      ? key === 'after'
+                        ? '#E8FF47'
+                        : '#181B2E'
+                      : 'transparent',
+                    color: isCurrent
+                      ? key === 'after'
+                        ? '#0D0F1A'
+                        : '#F0F2FF'
+                      : '#555E99',
+                    fontSize: '0.9375rem',
+                    minWidth: '140px',
+                  }}
+                >
+                  {key === 'before' ? '✗ Uten AIO' : '✓ Med AIO'}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" style={{ maxWidth: '56rem' }}>
-            {/* Metrics card */}
-            <div
-              className="rounded-2xl p-8"
-              style={{ background: '#181B2E', border: '1px solid #252840' }}
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          {/* Main demo panel */}
+          <div
+            className="rounded-3xl overflow-hidden"
+            style={{
+              border: isAfter ? '1px solid rgba(232,255,71,0.25)' : '1px solid #252840',
+              background: '#181B2E',
+              transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+              maxWidth: '900px',
+              boxShadow: isAfter ? '0 0 60px rgba(232,255,71,0.08)' : 'none',
+            }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {/* Top status bar */}
+                <div
+                  className="px-6 py-3 flex items-center justify-between"
+                  style={{
+                    background: isAfter ? 'rgba(232,255,71,0.06)' : '#13162A',
+                    borderBottom: '1px solid #252840',
+                    transition: 'background 0.4s ease',
+                  }}
                 >
-                  <div
-                    className="font-mono text-xs tracking-widest uppercase mb-6"
-                    style={{ color: '#555E99' }}
+                  <span
+                    className="font-mono text-xs"
+                    style={{ color: isAfter ? '#E8FF47' : '#555E99' }}
                   >
                     {data.label}
-                  </div>
+                  </span>
+                  <span
+                    className="font-mono text-xs px-3 py-1 rounded-full"
+                    style={{
+                      background: isAfter ? 'rgba(232,255,71,0.12)' : 'rgba(60,68,128,0.3)',
+                      color: isAfter ? '#E8FF47' : '#555E99',
+                    }}
+                  >
+                    {isAfter ? 'AIO aktivt' : 'Ingen AIO'}
+                  </span>
+                </div>
 
-                  {/* Rank + Clicks */}
-                  <div className="grid grid-cols-2 gap-6 mb-8">
-                    <div>
-                      <div
-                        style={{
-                          fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
-                          fontWeight: 800,
-                          fontSize: '2.5rem',
-                          color: isAfter ? '#E8FF47' : '#555E99',
-                          marginBottom: '0.25rem',
-                          lineHeight: 1,
-                        }}
-                      >
-                        {data.rank}
-                      </div>
-                      <div className="font-mono text-xs" style={{ color: '#555E99' }}>
-                        {data.rankLabel}
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
-                          fontWeight: 800,
-                          fontSize: '2.5rem',
-                          color: isAfter ? '#E8FF47' : '#555E99',
-                          marginBottom: '0.25rem',
-                          lineHeight: 1,
-                        }}
-                      >
-                        {data.clicks}
-                      </div>
-                      <div className="font-mono text-xs" style={{ color: '#555E99' }}>
-                        {data.clicksLabel}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Visibility bar */}
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="font-mono text-xs" style={{ color: '#555E99' }}>
-                      Google-synlighet
-                    </span>
-                    <span
-                      className="font-mono text-xs"
-                      style={{ color: isAfter ? '#E8FF47' : '#555E99' }}
-                    >
-                      {data.visibility}%
-                    </span>
-                  </div>
-                  <VisibilityBar value={data.visibility} active={isAfter} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Checklist card */}
-            <div
-              className="rounded-2xl p-8"
-              style={{ background: '#181B2E', border: '1px solid #252840' }}
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                  className="h-full flex flex-col"
+                {/* Metrics */}
+                <div
+                  className="grid grid-cols-1 md:grid-cols-3 gap-0"
+                  style={{ borderBottom: '1px solid #252840' }}
                 >
-                  <div>
+                  {[
+                    {
+                      label: 'Google-rangering',
+                      value: data.rank.text,
+                      good: data.rank.isGood,
+                    },
+                    {
+                      label: 'Organiske klikk / mnd',
+                      value: data.clicks.text,
+                      good: data.clicks.isGood,
+                    },
+                    {
+                      label: 'Google-synlighet',
+                      value: `${data.visibility}%`,
+                      good: isAfter,
+                      hasBar: true,
+                    },
+                  ].map((metric, i) => (
                     <div
-                      className="font-mono text-xs tracking-widest uppercase mb-6"
-                      style={{ color: '#555E99' }}
+                      key={metric.label}
+                      className="p-6"
+                      style={{
+                        borderRight: i < 2 ? '1px solid #252840' : 'none',
+                      }}
                     >
-                      Hva du får
+                      <div className="font-mono text-xs mb-2" style={{ color: '#555E99' }}>
+                        {metric.label}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                          fontWeight: 800,
+                          fontSize: '2.25rem',
+                          lineHeight: 1,
+                          color: metric.good ? '#E8FF47' : '#555E99',
+                          marginBottom: '0.75rem',
+                        }}
+                      >
+                        {metric.value}
+                      </div>
+                      {metric.hasBar && (
+                        <RankingBar value={data.visibility} isAfter={isAfter} />
+                      )}
                     </div>
-                    <ul className="space-y-4">
-                      {data.items.map((item, i) => (
-                        <motion.li
-                          key={item.text}
-                          initial={{ opacity: 0, x: -8 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.06, duration: 0.3 }}
-                          className="flex items-center gap-3"
+                  ))}
+                </div>
+
+                {/* Checklist */}
+                <div className="p-6">
+                  <div className="font-mono text-xs mb-4" style={{ color: '#555E99' }}>
+                    Hva som er på plass
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {data.items.map((item) => (
+                      <div key={item.text} className="flex items-center gap-2.5">
+                        <span
+                          className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs"
+                          style={{
+                            background: item.ok
+                              ? 'rgba(232,255,71,0.1)'
+                              : 'rgba(37,40,64,0.6)',
+                            border: item.ok
+                              ? '1px solid rgba(232,255,71,0.3)'
+                              : '1px solid #252840',
+                            color: item.ok ? '#E8FF47' : '#3C4480',
+                          }}
                         >
-                          <span
-                            className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium"
-                            style={{
-                              background: item.ok ? 'rgba(232,255,71,0.1)' : 'rgba(37,40,64,0.8)',
-                              color: item.ok ? '#E8FF47' : '#3C4480',
-                              border: item.ok ? '1px solid rgba(232,255,71,0.3)' : '1px solid #252840',
-                            }}
-                          >
-                            {item.ok ? '✓' : '✕'}
-                          </span>
-                          <span
-                            className="font-sans text-sm"
-                            style={{
-                              color: item.ok ? '#F0F2FF' : '#3C4480',
-                              textDecoration: item.ok ? 'none' : 'line-through',
-                            }}
-                          >
-                            {item.text}
-                          </span>
-                        </motion.li>
-                      ))}
-                    </ul>
+                          {item.ok ? '✓' : '✕'}
+                        </span>
+                        <span
+                          className="font-sans text-sm"
+                          style={{
+                            color: item.ok ? '#D4D8F5' : '#3C4480',
+                            textDecoration: item.ok ? 'none' : 'line-through',
+                          }}
+                        >
+                          {item.text}
+                        </span>
+                      </div>
+                    ))}
                   </div>
 
                   {isAfter && (
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="mt-auto pt-5"
-                      style={{ borderTop: '1px solid #252840', marginTop: '1.5rem' }}
+                      transition={{ delay: 0.25 }}
+                      className="mt-6 pt-4"
+                      style={{ borderTop: '1px solid #252840' }}
                     >
                       <a
                         href="#kontakt"
-                        className="inline-flex items-center gap-2 font-sans text-sm font-semibold transition-opacity hover:opacity-80"
+                        className="inline-flex items-center gap-2 font-sans text-sm font-semibold"
                         style={{ color: '#E8FF47' }}
                       >
-                        Kom i gang med AIO →
+                        Start med AIO — Book gratis gjennomgang →
                       </a>
                     </motion.div>
                   )}
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </FadeIn>
       </div>
